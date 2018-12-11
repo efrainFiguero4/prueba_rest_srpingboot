@@ -7,6 +7,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -14,41 +15,50 @@ import javax.servlet.http.HttpServletResponse;
 
 @SpringBootApplication
 public class PruebaApplication {
-	
+
 	@Component
-    @Order(Ordered.HIGHEST_PRECEDENCE)
+	@Order(Ordered.HIGHEST_PRECEDENCE)
+	public class SimpleCORSFilter implements Filter {
 
-    public class SimpleCORSFilter implements Filter {
+		@Override
+		public void init(FilterConfig fc) throws ServletException {
+		}
 
-        @Override
-        public void init(FilterConfig fc) throws ServletException {
-        }
+		@Override
+		public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
+				throws IOException, ServletException {
+			HttpServletResponse response = (HttpServletResponse) resp;
+			HttpServletRequest request = (HttpServletRequest) req;
+			response.setHeader("Access-Control-Allow-Origin", "*");
+			response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
+			response.setHeader("Access-Control-Max-Age", "3600");
+			response.setHeader("Access-Control-Allow-Headers",
+					"x-requested-with, authorization, Content-Type, Authorization, credential, X-XSRF-TOKEN");
 
-        @Override
-        public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
-            HttpServletResponse response = (HttpServletResponse) resp;
-            HttpServletRequest request = (HttpServletRequest) req;
-            response.setHeader("Access-Control-Allow-Origin", "*");
-            response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
-            response.setHeader("Access-Control-Max-Age", "3600");
-            response.setHeader("Access-Control-Allow-Headers", "x-requested-with, authorization, Content-Type, Authorization, credential, X-XSRF-TOKEN");
+			if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+				response.setStatus(HttpServletResponse.SC_OK);
+			} else {
+				chain.doFilter(req, resp);
+			}
+		}
 
-            if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-                response.setStatus(HttpServletResponse.SC_OK);
-            } else {
-                chain.doFilter(req, resp);
-            }
-        }
+		@Override
+		public void destroy() {
+		}
 
-        @Override
-        public void destroy() {
-        }
+	}
 
-    }
-
-	public static void main(String[] args) {
-
+	/*
+	 * @Bean
+	 * 
+	 * @Primary public DataSource dataSource() { return
+	 * DataSourceBuilder.create().username("sa").password("sa").url("jdbc:h2:"+
+	 * System.getProperty("user.home")+"//test;DATABASE_TO_UPPER=false")
+	 * .driverClassName("org.h2.Driver").build(); }
+	 */
+	
+	public static void main(String[] args) throws UnknownHostException {
 		SpringApplication.run(PruebaApplication.class, args);
-
+		System.out.println(System.getProperty("user.name") + " - " + System.getProperty("user.home"));
 	}
 }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- ruta de log generado -->
+    <property name="LOG_HOME" value="logs"/>
+    <!-- nombre del archivo losg -->
+    <property name="FILE_NAME_PRUEBA" value="LOG_PRUEBA"/>
+
+    <appender name="STDOUT"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <!-- formato de log en la consola -->
+            <Pattern>%d{HH:mm:ss.SSS} [%-5level] [%thread] [%logger{0}:%line] -
+                %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+
+    <appender name="FILE_PRUEBA"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/${FILE_NAME_PRUEBA}.log</file>
+        <encoder>
+            <!-- formato de log en el archivo log -->
+            <pattern>%d{HH:mm:ss.SSS} [%-5level] - %msg%n</pattern>
+        </encoder>
+
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- historial de log diario -->
+            <fileNamePattern>${LOG_HOME}/history/${FILE_NAME_PRUEBA}.%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="com.prueba" level="INFO, DEBUG">
+        <appender-ref ref="FILE_PRUEBA"/>
+    </logger>
+
+    <root level="OFF">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

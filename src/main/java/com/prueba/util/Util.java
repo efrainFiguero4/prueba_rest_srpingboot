@@ -16,6 +16,7 @@ public class Util {
 	public static List<String> validarUsuario(Usuario usuario) {
 		List<String> mensajes = new ArrayList<>();
 
+		@SuppressWarnings("unchecked")
 		Map<String, Object> fields = new ObjectMapper().convertValue(usuario, Map.class);
 
 		for (String fieldvalidate : FIELD_VALIDATE) {

@@ -18,10 +18,6 @@ public class Constant {
 	public static final String UPDATE_USUARIO = "UPDATE USUARIO SET NOMBRE = ?, APELLIDO=?, EDAD=? WHERE DNI = ?";
 	public static final String DELETE_USUARIO = "DELETE FROM USUARIO WHERE DNI = ?";
 
-	public static final String LOG_INFO = "info";
-	public static final String LOG_DEBUG = "debug";
-	public static final String LOG_ERROR = "error";
-
 	public static final RowMapper<Usuario> MAPPER_USUARIO = (rs, i) -> new Usuario(rs.getInt("dni"),
 			rs.getString("nombre"), rs.getString("apellido"), rs.getString("edad"));
 

@@ -1,6 +1,5 @@
 package com.prueba.service.impl;
 
-import java.util.HashMap;
 import java.util.List;
 
 import com.prueba.constant.Constant;
@@ -29,21 +28,17 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Override
 	public Object obtenerUsuario(Integer dni) {
 
-		HashMap<String, Object> mensaje = new HashMap<String, Object>();
-		mensaje.put("error_code", 1);
-
+		Mensaje mensaje = new Mensaje();
 		Integer validate = usuarioDao.validarUsuarioExiste(dni);
-
-		System.out.println(validate);
 
 		if (validate.equals(Constant.CODIGO_OK)) {
 			Usuario usuario = (Usuario) usuarioDao.obtenerUsuario(dni);
-			mensaje.put("data", usuario);
-			UtilLog.logger(mensaje.toString(), Constant.LOG_INFO, this.getClass());
+			mensaje.setCodigo(Constant.CODIGO_OK);
+			mensaje.setMensaje(usuario);
+			UtilLog.logger(mensaje.toString(), UtilLog.LOG_INFO, this.getClass());
 		} else {
-			mensaje.put("error_code", 0);
-			mensaje.put("data", "Usuario no encontrado.");
-			UtilLog.logger(mensaje.toString(), Constant.LOG_INFO, this.getClass());
+			mensaje.setMensaje("Usuario no encontrado");
+			UtilLog.logger(mensaje.toString(), UtilLog.LOG_INFO, this.getClass());
 		}
 
 		return mensaje;
@@ -53,14 +48,17 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public Object registrarUsuario(Usuario usuario) {
 		Mensaje mensaje = new Mensaje();
 		Integer validate = usuarioDao.validarUsuarioExiste(usuario.dni);
-		List<String> validateusuario = Util.validarUsuario(usuario);
 
-		if (validateusuario.size() > 0)
-			mensaje.setMensaje(validateusuario);
-		else if (validate.equals(Constant.CODIGO_NONOK)) {
-			int result = usuarioDao.registrarUsuario(usuario);
-			mensaje.setCodigo(result);
-			mensaje.setMensaje(result == Constant.CODIGO_OK ? "Registrado correctamente" : "Error al registrar");
+		if (validate.equals(Constant.CODIGO_NONOK)) {
+			List<String> validateusuario = Util.validarUsuario(usuario);
+
+			if (validateusuario.size() > 0)
+				mensaje.setMensaje(validateusuario);
+			else {
+				int result = usuarioDao.registrarUsuario(usuario);
+				mensaje.setCodigo(result);
+				mensaje.setMensaje(result == Constant.CODIGO_OK ? "Registrado correctamente" : "Error al registrar");
+			}
 		} else
 			mensaje.setMensaje("El usuario con DNI " + usuario.dni + " ya existe.");
 
@@ -76,7 +74,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 		if (validate.equals(Constant.CODIGO_OK)) {
 			int result = usuarioDao.actualizarUsuario(usuario);
 			mensaje.setCodigo(result);
-			mensaje.setMensaje(result == Constant.CODIGO_OK ? "Editado correctamente" : "Error al Editar");
+			mensaje.setMensaje(result == Constant.CODIGO_OK ? "Editado correctamente." : "Error al Editar.");
 		} else
 			mensaje.setMensaje("El usuario con DNI " + usuario.dni + " no existe.");
 
@@ -87,10 +85,14 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public Mensaje eliminarUsuario(int dni) {
 
 		Mensaje mensaje = new Mensaje();
-		int result = usuarioDao.eliminarUsuario(dni);
+		Integer validateexist = usuarioDao.validarUsuarioExiste(dni);
 
-		mensaje.setCodigo(result);
-		mensaje.setMensaje(result == Constant.CODIGO_OK ? "Eliminado correctamente" : "Error al Eliminar");
+		if (validateexist.equals(Constant.CODIGO_OK)) {
+			int result = usuarioDao.eliminarUsuario(dni);
+			mensaje.setCodigo(result);
+			mensaje.setMensaje(result == Constant.CODIGO_OK ? "Eliminado correctamente." : "Error al Eliminar.");
+		} else
+			mensaje.setMensaje("Usuario a eliminar no existe.");
 
 		return mensaje;
 	}

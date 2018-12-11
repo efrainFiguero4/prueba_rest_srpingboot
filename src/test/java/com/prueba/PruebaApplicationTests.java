@@ -29,7 +29,7 @@ public class PruebaApplicationTests {
 
 		Object usuarios = usuarioController.listarUsuario();
 		assertNotNull("is not null", usuarios);
-		UtilLog.logger(usuarios.toString(), Constant.LOG_INFO, this.getClass());
+		UtilLog.logger(usuarios.toString(), UtilLog.LOG_INFO, this.getClass());
 		assertTrue("is valid", usuarios.toString() != null);
 
 	}
@@ -43,7 +43,7 @@ public class PruebaApplicationTests {
 		assertNotNull(mensaje.codigo);
 		assertEquals(Constant.CODIGO_OK, mensaje.codigo);
 
-		UtilLog.logger(mensaje.toString(), Constant.LOG_INFO, this.getClass());
+		UtilLog.logger(mensaje.toString(), UtilLog.LOG_INFO, this.getClass());
 	}
 
 	@Test
@@ -55,7 +55,7 @@ public class PruebaApplicationTests {
 
 		assertNotNull(mensaje.codigo);
 		assertEquals(Constant.CODIGO_NONOK, mensaje.codigo);
-		UtilLog.logger(mensaje.toString(), Constant.LOG_INFO, this.getClass());
+		UtilLog.logger(mensaje.toString(), UtilLog.LOG_INFO, this.getClass());
 	}
 
 	@Test
@@ -64,7 +64,7 @@ public class PruebaApplicationTests {
 		int idusuario = 2;
 
 		Mensaje mensaje = (Mensaje) usuarioController.eliminarUsuario(idusuario);
-		UtilLog.logger(mensaje.toString(), Constant.LOG_INFO, this.getClass());
+		UtilLog.logger(mensaje.toString(), UtilLog.LOG_INFO, this.getClass());
 		assertNotNull(mensaje.codigo);
 		assertEquals(Constant.CODIGO_NONOK, mensaje.codigo);
 	}
