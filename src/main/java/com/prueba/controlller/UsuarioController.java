@@ -1,5 +1,8 @@
 package com.prueba.controlller;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,13 +27,19 @@ public class UsuarioController {
 
 	@RequestMapping(value = "usuarios", method = { RequestMethod.GET })
 	@ResponseStatus(value = HttpStatus.OK)
-	public Object listarUsuario() {
-		return usuarioService.listarUsuario();
+	public Object listarUsuario(HttpServletRequest httpServletRequest) {
+
+		UtilLog.logger("{id : " + httpServletRequest.getParameter("id") + "}", UtilLog.LOG_INFO, this.getClass());
+
+		if (!StringUtils.isEmpty(httpServletRequest.getParameter("id")))
+			return usuarioService.obtenerUsuario(String.valueOf(httpServletRequest.getParameter("id")));
+		else
+			return usuarioService.listarUsuario();
 	}
 
 	@RequestMapping(value = "usuario", method = { RequestMethod.GET })
 	@ResponseStatus(value = HttpStatus.OK)
-	public Object obtenerUsuario(@RequestParam("id") Integer id) {
+	public Object obtenerUsuario(@RequestParam("id") String id) {
 		return usuarioService.obtenerUsuario(id);
 	}
 
@@ -48,15 +57,14 @@ public class UsuarioController {
 
 	@RequestMapping(value = "usuario/{idusuario}", method = { RequestMethod.DELETE })
 	@ResponseStatus(value = HttpStatus.OK)
-	public Object eliminarUsuario(@PathVariable("idusuario") int idusuario) {
+	public Object eliminarUsuario(@PathVariable("idusuario") String idusuario) {
 		return usuarioService.eliminarUsuario(idusuario);
 	}
-	
+
 	@RequestMapping(value = "logger", method = { RequestMethod.GET })
 	@ResponseStatus(value = HttpStatus.OK)
 	public Object obtenerLoggerUsuario() {
 		return UtilLog.getBytesLog();
 	}
-	
 
 }

@@ -13,6 +13,13 @@ public class Util {
 
 	public static final String[] FIELD_VALIDATE = { "dni", "nombre", "apellido" };
 
+	public static Boolean validarDNI(String dni) {
+		String regex = "\\d+";
+
+		UtilLog.logger( "Validate DNI = "+dni.matches(regex), UtilLog.LOG_INFO, Util.class);
+		return dni.matches(regex);
+	}
+
 	public static List<String> validarUsuario(Usuario usuario) {
 		List<String> mensajes = new ArrayList<>();
 

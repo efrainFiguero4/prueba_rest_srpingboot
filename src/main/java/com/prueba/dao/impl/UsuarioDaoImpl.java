@@ -18,7 +18,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
 	JdbcTemplate jdbcTemplate;
 
 	@Override
-	public Integer validarUsuarioExiste(Integer dni) {
+	public Integer validarUsuarioExiste(String dni) {
 		return this.jdbcTemplate.queryForObject(Constant.SELECT_COUNT_USUARIO, new Object[] { dni }, Integer.class);
 	}
 
@@ -28,7 +28,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
 	}
 
 	@Override
-	public Usuario obtenerUsuario(Integer dni) {
+	public Usuario obtenerUsuario(String dni) {
 		return this.jdbcTemplate.queryForObject(Constant.SELECT_USUARIO, new Object[] { dni },
 				new BeanPropertyRowMapper<Usuario>(Usuario.class));
 	}
@@ -46,7 +46,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
 	}
 
 	@Override
-	public int eliminarUsuario(int dni) {
+	public int eliminarUsuario(String dni) {
 		return this.jdbcTemplate.update(Constant.DELETE_USUARIO, dni);
 	}
 

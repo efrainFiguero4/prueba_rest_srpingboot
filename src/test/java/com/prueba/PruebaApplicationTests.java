@@ -12,9 +12,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prueba.constant.Constant;
-import com.prueba.controlller.UsuarioController;
 import com.prueba.model.Mensaje;
 import com.prueba.model.Usuario;
+import com.prueba.service.UsuarioService;
 import com.prueba.util.UtilLog;
 
 @RunWith(SpringRunner.class)
@@ -22,7 +22,7 @@ import com.prueba.util.UtilLog;
 public class PruebaApplicationTests {
 
 	@Autowired
-	UsuarioController usuarioController;
+	UsuarioService usuarioController;
 
 	@Test
 	public void obtenerUsuario() {
@@ -49,7 +49,7 @@ public class PruebaApplicationTests {
 	@Test
 	@Transactional
 	public void actualizarUsuario() {
-		Usuario usuario = new Usuario(2, "Editado", "Editar Apellido", "23");
+		Usuario usuario = new Usuario("74547112", "Editado", "Editar Apellido", "23");
 
 		Mensaje mensaje = (Mensaje) usuarioController.actualizarUsuario(usuario);
 
@@ -61,7 +61,7 @@ public class PruebaApplicationTests {
 	@Test
 	@Transactional
 	public void EliminarUsuario() {
-		int idusuario = 2;
+		String idusuario = "74547112";
 
 		Mensaje mensaje = (Mensaje) usuarioController.eliminarUsuario(idusuario);
 		UtilLog.logger(mensaje.toString(), UtilLog.LOG_INFO, this.getClass());

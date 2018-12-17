@@ -26,7 +26,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 
 	@Override
-	public Object obtenerUsuario(Integer dni) {
+	public Object obtenerUsuario(String dni) {
 
 		Mensaje mensaje = new Mensaje();
 		Integer validate = usuarioDao.validarUsuarioExiste(dni);
@@ -47,20 +47,28 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Override
 	public Object registrarUsuario(Usuario usuario) {
 		Mensaje mensaje = new Mensaje();
-		Integer validate = usuarioDao.validarUsuarioExiste(usuario.dni);
+		if (Util.validarDNI(String.valueOf(usuario.getDni()))) {
+			if (String.valueOf(usuario.getDni()).length() == 8) {
+				Integer validate = usuarioDao.validarUsuarioExiste(usuario.dni);
 
-		if (validate.equals(Constant.CODIGO_NONOK)) {
-			List<String> validateusuario = Util.validarUsuario(usuario);
+				if (validate.equals(Constant.CODIGO_NONOK)) {
+					List<String> validateusuario = Util.validarUsuario(usuario);
 
-			if (validateusuario.size() > 0)
-				mensaje.setMensaje(validateusuario);
-			else {
-				int result = usuarioDao.registrarUsuario(usuario);
-				mensaje.setCodigo(result);
-				mensaje.setMensaje(result == Constant.CODIGO_OK ? "Registrado correctamente" : "Error al registrar");
-			}
-		} else
-			mensaje.setMensaje("El usuario con DNI " + usuario.dni + " ya existe.");
+					if (validateusuario.size() > 0)
+						mensaje.setMensaje(validateusuario);
+					else {
+						int result = usuarioDao.registrarUsuario(usuario);
+						mensaje.setCodigo(result);
+						mensaje.setMensaje(
+								result == Constant.CODIGO_OK ? "Registrado correctamente" : "Error al registrar");
+					}
+				} else
+					mensaje.setMensaje("El usuario con DNI " + usuario.dni + " ya existe.");
+			} else
+				mensaje.setMensaje("Número DNI ingresado debe tener solo 8 dígitos");
+		} else {
+			mensaje.setMensaje("Número DNI ingresado es Inválido");
+		}
 
 		return mensaje;
 	}
@@ -82,7 +90,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 
 	@Override
-	public Mensaje eliminarUsuario(int dni) {
+	public Mensaje eliminarUsuario(String dni) {
 
 		Mensaje mensaje = new Mensaje();
 		Integer validateexist = usuarioDao.validarUsuarioExiste(dni);
